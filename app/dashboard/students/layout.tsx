@@ -14,7 +14,7 @@ export default async function StudentsLayout({
   if (!user) redirect('/auth/login')
 
   const { data: student_profile } = await supabase
-    .from('stduent_profiles')
+    .from('profiles')
     .select('role')
     .eq('id', user.id)
     .single()
