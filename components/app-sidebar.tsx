@@ -42,12 +42,10 @@ export function AppSidebar({ profile, email }: AppSidebarProps) {
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
-  const nav =
-    profile.role === 'admin'
-      ? adminNav
-      : profile.role === 'teacher'
-        ? teacherNav
-        : studentNav
+  // Select nav based on role
+  let nav = studentNav
+  if (profile.role === 'admin') nav = adminNav
+  if (profile.role === 'teacher') nav = teacherNav
 
   function handleLogout() {
     startTransition(async () => {
@@ -73,22 +71,24 @@ export function AppSidebar({ profile, email }: AppSidebarProps) {
       {/* Navigation Links */}
       <nav className="flex-1 px-3 py-6 flex flex-col gap-1.5">
         {nav.map(({ href, label, icon: Icon }) => {
-          // THE FIX: Strict equality check for the active state.
-          // This prevents the "Overview" button from fighting the "Students" button.
-          const isActive = pathname === href || (href === '/dashboard/wellness' && pathname === '/dashboard')
+          // FIXED: Simple strict equality check + handle /dashboard default
+          const isActive =
+            pathname === href ||
+            (pathname === '/dashboard' && href === '/dashboard/wellness') ||
+            (pathname === '/dashboard' && href === '/dashboard/overview')
 
           return (
-            <a
+            <Link
               key={href}
               href={href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                  ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
-                  : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                 }`}
             >
               <Icon size={18} className={isActive ? 'text-white' : ''} />
               {label}
-            </a>
+            </Link>
           )
         })}
       </nav>

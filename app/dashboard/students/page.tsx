@@ -13,11 +13,13 @@ export default async function StudentsPage() {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
-  // SECURITY: If a student tries to manually type /dashboard/students, 
-  // kick them to their own wellness page.
-  if (profile?.role === 'student') {
+  // Use fallback logic like Overview page
+  const role = profile?.role ?? user.user_metadata?.role ?? 'student'
+
+  // Only teachers can access this page
+  if (role !== 'teacher') {
     redirect('/dashboard/wellness')
   }
 

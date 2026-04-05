@@ -14,13 +14,13 @@ export default async function TeacherOverviewPage() {
     .from('profiles')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   const role = profile?.role ?? user.user_metadata?.role ?? 'student'
 
   // Only teachers can access this page
   if (role !== 'teacher') {
-    redirect('/dashboard')
+    redirect('/dashboard/wellness')
   }
 
   // Fetch all students

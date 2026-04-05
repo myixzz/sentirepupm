@@ -1,0 +1,5 @@
+.student-menu {
+    position: relative;
+    z-index: 1000;
+}
+/* or hide by body class: .teachers-portal .student-menu { display:none; } */
